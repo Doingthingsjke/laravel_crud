@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\CarModelsController;
+use App\Http\Controllers\CarsController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,3 +18,21 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::middleware('auth')->group(function (){
+    Route::prefix('admin')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('admin.dashboard');
+        })->name('admin.dashboard');
+
+        Route::resource('/cars',CarsController::class);
+        Route::resource('/car-models', CarModelsController::class);
+    });
+    Route::prefix('user')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('user.dashboard');
+        })->name('user.dashboard');
+    });
+});
+
+require __DIR__.'/auth.php';
